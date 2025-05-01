@@ -5,13 +5,17 @@ using System.Collections.Generic;
 
 namespace SummitSample.UserService.Data.SqlServer.DataAccess.Entities;
 
-public partial class User
+public partial class TodoItem
 {
     public int Id { get; set; }
 
-    public string LastName { get; set; } = null!;
+    public int UserId { get; set; }
 
-    public string FirstName { get; set; } = null!;
+    public string Text { get; set; } = null!;
 
-    public virtual ICollection<TodoItem> TodoItems { get; set; } = new List<TodoItem>();
+    public bool IsCompleted { get; set; }
+
+    public bool IsImportant { get; set; }
+
+    public virtual User User { get; set; } = null!;
 }

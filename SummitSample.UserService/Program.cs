@@ -13,6 +13,38 @@ namespace SummitSample.UserService;
 public class Program
 {
 
+	public static WebApplication ApplyMigrations( WebApplication app )
+	{
+		using ( var scope = app.Services.CreateScope() )
+		{
+			UserDbContext dbContext = scope.ServiceProvider.GetRequiredService<UserDbContext>();
+			ILogger logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+
+			// Check and apply pending migrations
+			IEnumerable<string> pendingMigrations = dbContext.Database.GetPendingMigrations();
+			if ( pendingMigrations.Any() )
+			{
+				logger.LogInformation( "{Classname}.{Methodname}: Pending migrations found, applying migrations ...",
+					nameof( Program ),
+					nameof( ApplyMigrations ) );
+
+				dbContext.Database.Migrate();
+
+				logger.LogInformation( "{Classname}.{Methodname}: Migrations applied successfully.",
+					nameof( Program ),
+					nameof( ApplyMigrations ) );
+			}
+			else
+			{
+				logger.LogInformation( "{Classname}.{Methodname}: No pending migrations found in the database.",
+					nameof( Program ),
+					nameof( ApplyMigrations ) );
+			}
+		}
+
+		return app;
+	}
+
 	private static void ConfigureServices(IServiceCollection services, IConfiguration configuration )
 	{
 		// Add FastEndpoints
@@ -32,6 +64,25 @@ public class Program
 		services.AddOpenApi();
 	}
 
+	private static void ConfigurePipeline(WebApplication app )
+	{
+		app.MapDefaultEndpoints();
+
+		// Configure the HTTP request pipeline.
+		if ( app.Environment.IsDevelopment() )
+		{
+			app.MapOpenApi();
+		}
+
+		ApplyMigrations( app );
+
+		app.UseHttpsRedirection();
+
+		app.UseAuthorization();
+
+		app.UseFastEndpoints();
+	}
+
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
@@ -41,19 +92,7 @@ public class Program
 
         var app = builder.Build();
 
-        app.MapDefaultEndpoints();
-
-        // Configure the HTTP request pipeline.
-        if (app.Environment.IsDevelopment())
-        {
-            app.MapOpenApi();
-        }
-
-        app.UseHttpsRedirection();
-
-        app.UseAuthorization();
-
-		app.UseFastEndpoints();
+		ConfigurePipeline( app );
 
         app.Run();
     }
