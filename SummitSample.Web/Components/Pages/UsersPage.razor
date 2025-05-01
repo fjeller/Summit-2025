@@ -1,0 +1,108 @@
+﻿@page "/users"
+
+@using SummitSample.Web.ApiClients
+@using SummitSample.Web.Components.Dialogs
+@using SummitSample.Web.Models
+
+@inject UserApiClient UserApiClient
+@inject DialogService DialogService
+
+
+<h3>Users</h3>
+
+<RadzenRow>
+	<RadzenColumn SizeSM="4">
+		<RadzenPanel AllowCollapse="false" Style="width:100%;">
+			<HeaderTemplate>
+				<div class="panel-header">
+					<h6>Users</h6>
+				</div>
+				<RadzenButton class="panel-header-button" Text="Add" ButtonStyle="ButtonStyle.Light" Click="async () => await HandleAddUserAsync()" />
+			</HeaderTemplate>
+			<ChildContent>
+				<RadzenListBox class="panel-listbox" @bind-Value="@SelectedUser" Data="@Users" TextProperty="@nameof(UserModel.FullName)"
+				ValueProperty="@nameof(UserModel.Id)">
+					<Template>
+						<RadzenButton Icon="edit" Click="async () => await HandleEditUserAsync(((UserModel)context).Id)" 
+						Variant="Variant.Text" Size="ButtonSize.Small" />
+						@(( context as UserModel )!.FullName)
+					</Template>
+				</RadzenListBox>
+			</ChildContent>
+		</RadzenPanel>
+	</RadzenColumn>
+</RadzenRow>
+
+@code {
+	[Parameter]
+	public List<UserModel> Users { get; set; } = [];
+
+	private int SelectedUser { get; set; }
+
+	protected override async Task OnInitializedAsync()
+	{
+		await ReloadUsersAsync();
+	}
+
+	public async Task HandleAddUserAsync()
+	{
+		UserModel? addedUser = await ShowUserDialogAsync();
+		if ( addedUser is null )
+		{
+			return;
+		}
+
+		await UserApiClient.StoreUserAsync( addedUser );
+
+		await ReloadUsersAsync();
+	}
+
+	public async Task HandleEditUserAsync(int id)
+	{
+		UserModel? userToEdit = Users.FirstOrDefault( u => u.Id == id );
+		if (userToEdit is null)
+		{
+			return;
+		}
+
+		UserModel? editedUser = await ShowUserDialogAsync( userToEdit );
+		if (editedUser is null)
+		{
+			return;
+		}
+
+		await UserApiClient.StoreUserAsync( editedUser );
+
+		await ReloadUsersAsync();
+	}
+
+	public async Task<UserModel?> ShowUserDialogAsync(UserModel? userToEdit = null)
+	{
+		userToEdit ??= new UserModel();
+
+		string header = userToEdit.Id == 0
+			? "Add User"
+			: "Edit User";
+
+		Dictionary<string, object?> data = new()
+		{
+			{ nameof(EditUserDialog.CurrentUser), userToEdit }
+		};
+		DialogOptions options = new()
+		{
+			Resizable = false,
+			Draggable = true,
+		};
+
+		dynamic dynamicResult = await DialogService.OpenAsync<EditUserDialog>(header, data, options);
+
+		UserModel result = dynamicResult;
+
+		return result;
+	}
+
+	public async Task ReloadUsersAsync()
+	{
+		Users = await UserApiClient.GetUsersAsync();
+	}
+}

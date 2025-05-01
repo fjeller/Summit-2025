@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FastEndpoints" Version="6.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SummitSample.ServiceDefaults\SummitSample.ServiceDefaults.csproj" />
+    <ProjectReference Include="..\SummitSample.UserService.Contracts\SummitSample.UserService.Contracts.csproj" />
+    <ProjectReference Include="..\SummitSample.UserService.Core\SummitSample.UserService.Core.csproj" />
+    <ProjectReference Include="..\SummitSample.UserService.Data.SqlServer\SummitSample.UserService.Data.SqlServer.csproj" />
+  </ItemGroup>
+
+</Project>

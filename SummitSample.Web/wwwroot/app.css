@@ -1,0 +1,72 @@
+:root {
+	--rz-body-font-size: 1rem;
+}
+
+.header-text {
+	display: inline-block;
+	padding: 5px 0 0 15px;
+	font-size: 1.5rem;
+}
+
+.width-percent-100 {
+	width: 100%;
+}
+
+.padding-top-15 {
+	padding-top: 15px;
+}
+
+h1 {
+	padding-top: 0;
+	margin-top: 0;
+	font-size: 1.75rem;
+	font-weight: normal;
+}
+
+.menu-items {
+	padding-left: 2rem;
+	padding-top: 12px;
+}
+
+.rz-link {
+	color: #fff;
+	font-weight: normal;
+	text-decoration: none;
+}
+
+	.rz-link:hover {
+		text-decoration: none;
+	}
+
+		.rz-link:hover .rz-link-text, .rz-link:focus .rz-link-text {
+			text-decoration: none;
+		}
+
+	.rz-link:focus {
+		text-decoration: none;
+	}
+
+.panel-header {
+	padding: 0.625rem;
+	margin-bottom: 1rem;
+}
+
+	.panel-header h6 {
+		margin-top: 0;
+		margin-bottom: 0;
+		font-size: 1rem;
+	}
+
+.panel-content {
+	padding: 0.625rem;
+}
+
+.panel-header-button {
+	height: fit-content;
+	min-width: 100px;
+}
+
+.panel-listbox {
+	width: 100%;
+	margin-top: 2rem;
+}

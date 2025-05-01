@@ -1,0 +1,32 @@
+﻿@using SummitSample.Web.Models
+
+@inject DialogService DialogService
+
+<RadzenStack Gap="1rem" Orientation="Orientation.Vertical" JustifyContent="JustifyContent.SpaceBetween" Style="height: 100%;">
+	<RadzenStack>
+		<RadzenRow>
+			<RadzenColumn Size="12">
+				<RadzenStack>
+					<RadzenFormField Text="First Name">
+						<RadzenTextBox Name="textBoxFirstName" @bind-Value="@CurrentUser.FirstName" class="width-percent-100"></RadzenTextBox>
+					</RadzenFormField>
+					<RadzenFormField Text="Last Name">
+						<RadzenTextBox Name="textBoxLastName" @bind-Value="@CurrentUser.LastName" class="width-percent-100"></RadzenTextBox>
+					</RadzenFormField>
+				</RadzenStack>
+			</RadzenColumn>
+		</RadzenRow>
+	</RadzenStack>
+	<RadzenStack Visible="true" Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End" Gap="0.5rem">
+
+		<RadzenButton Click="@((args) => DialogService.Close(null))" Variant="Variant.Outlined" ButtonStyle="ButtonStyle.Primary" Text="Cancel" />
+		<RadzenButton Click="@((args) => DialogService.Close(CurrentUser))" Variant="Variant.Flat" ButtonStyle="ButtonStyle.Primary" Text="Ok" />
+
+	</RadzenStack>
+</RadzenStack>
+
+@code {
+
+	[Parameter]
+	public UserModel CurrentUser { get; set; } = null!;
+}

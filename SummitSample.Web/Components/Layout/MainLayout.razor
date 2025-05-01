@@ -1,0 +1,25 @@
+﻿@inherits LayoutComponentBase
+
+<RadzenComponents @rendermode="InteractiveServer" />
+
+<RadzenLayout>
+	<RadzenHeader>
+		<RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0">
+			<div class="header-text">
+				<RadzenLabel Text="Banking Summit 2025 - Aspire-Demo" />
+			</div>
+			<div class="menu-items">
+					<RadzenLink Path="users" Text="Users"/>
+			</div>
+		</RadzenStack>
+	</RadzenHeader>
+	<RadzenBody>
+		<div class="rz-p-4">
+			@Body
+		</div>
+	</RadzenBody>
+	<RadzenFooter>
+		&copy; 2025 Frank Eller for the Banking Summit 2025
+	</RadzenFooter>
+</RadzenLayout>
+
