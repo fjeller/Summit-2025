@@ -19,6 +19,7 @@ public class Program
 
 		// This URL uses "https+http://" to indicate HTTPS is preferred over HTTP - but both work
 		services.AddHttpClient<UserApiClient>( client => client.BaseAddress = new Uri( "https+http://userservice" ) );
+		services.AddHttpClient<TodoApiClient>( client => client.BaseAddress = new Uri( "https+http://todoservice" ) );
 	}
 
 	public static void ConfigurePipeline( WebApplication app )

@@ -13,6 +13,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SummitSample.ServiceDefaults\SummitSample.ServiceDefaults.csproj" />
+    <ProjectReference Include="..\SummitSample.TodoService.Contracts\SummitSample.TodoService.Contracts.csproj" />
+    <ProjectReference Include="..\SummitSample.TodoService.Core\SummitSample.TodoService.Core.csproj" />
+    <ProjectReference Include="..\SummitSample.TodoService.Data.SqlServer\SummitSample.TodoService.Data.SqlServer.csproj" />
   </ItemGroup>
 
 </Project>

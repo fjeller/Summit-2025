@@ -5,14 +5,15 @@
 @using SummitSample.Web.Models
 
 @inject UserApiClient UserApiClient
+@inject TodoApiClient TodoClient
 @inject DialogService DialogService
 
 
 <h3>Users</h3>
 
 <RadzenRow>
-	<RadzenColumn SizeSM="4">
-		<RadzenPanel AllowCollapse="false" Style="width:100%;">
+	<RadzenColumn Size="4">
+		<RadzenPanel AllowCollapse="false" class="width-percent-100">
 			<HeaderTemplate>
 				<div class="panel-header">
 					<h6>Users</h6>
@@ -20,14 +21,52 @@
 				<RadzenButton class="panel-header-button" Text="Add" ButtonStyle="ButtonStyle.Light" Click="async () => await HandleAddUserAsync()" />
 			</HeaderTemplate>
 			<ChildContent>
-				<RadzenListBox class="panel-listbox" @bind-Value="@SelectedUser" Data="@Users" TextProperty="@nameof(UserModel.FullName)"
-				ValueProperty="@nameof(UserModel.Id)">
+				<RadzenListBox class="panel-listbox" @bind-Value="@SelectedUserId" Data="@Users" TextProperty="@nameof(UserModel.FullName)"
+				ValueProperty="@nameof(UserModel.Id)" Change="async () => await LoadTodoItemsAsync()">
 					<Template>
-						<RadzenButton Icon="edit" Click="async () => await HandleEditUserAsync(((UserModel)context).Id)" 
+						<RadzenButton Icon="edit" Click="async () => await HandleEditUserAsync(((UserModel)context).Id)"
 						Variant="Variant.Text" Size="ButtonSize.Small" />
 						@(( context as UserModel )!.FullName)
 					</Template>
 				</RadzenListBox>
+			</ChildContent>
+		</RadzenPanel>
+	</RadzenColumn>
+	<RadzenColumn Size="8">
+		<RadzenPanel AllowCollapse="false" class="width-percent-100">
+			<HeaderTemplate>
+				<div class="panel-header">
+					<h6>Todo Items</h6>
+				</div>
+				@if ( SelectedUserId != 0 )
+				{
+					<RadzenButton class="panel-header-button" Text="Add" ButtonStyle="ButtonStyle.Light" Click="async () => await HandleAddTodoItemAsync()" />
+				}
+			</HeaderTemplate>
+			<ChildContent>
+				@if ( TodoItems.Any() )
+				{
+
+					<RadzenListBox class="panel-listbox" @bind-Value="@SelectedTodoItemId" Data="@TodoItems" TextProperty="@nameof(TodoItemModel.Text)"
+					ValueProperty="@nameof(TodoItemModel.Id)">
+						<Template>
+							@{
+								bool isCompleted = ( (TodoItemModel)context ).IsCompleted;
+								bool isImportant = ( (TodoItemModel)context ).IsImportant;
+								string text = ( (TodoItemModel)context ).Text;
+								string iconCompleted = isCompleted ? "undo" : "check";
+								string iconImportant = isImportant ? "radio_button_unchecked" : "exclamation";
+								text = isImportant ? $"<b>{text}</b>" : text;
+								text = isCompleted ? $"<s>{text}</s>" : text;
+							}
+							<RadzenButton Icon="edit" Click="async () => await HandleEditTodoItemAsync(((TodoItemModel)context).Id)" Variant="Variant.Text" Size="ButtonSize.Small" />
+							<RadzenButton Icon="@iconImportant" Click="async () => await HandleToggleImportantAsync(((TodoItemModel)context).Id)" Variant="Variant.Text" Size="ButtonSize.Small" />
+							<RadzenButton Icon="@iconCompleted" Click="async () => await HandleToggleCompletedAsync(((TodoItemModel)context).Id)" Variant="Variant.Text" Size="ButtonSize.Small" class="margin-right-10" />
+
+							@((MarkupString)text)
+						</Template>
+					</RadzenListBox>
+				}
 			</ChildContent>
 		</RadzenPanel>
 	</RadzenColumn>
@@ -37,14 +76,18 @@
 	[Parameter]
 	public List<UserModel> Users { get; set; } = [];
 
-	private int SelectedUser { get; set; }
+	private List<TodoItemModel> TodoItems { get; set; } = [];
+
+	private int SelectedUserId { get; set; }
+
+	private int SelectedTodoItemId { get; set; }
 
 	protected override async Task OnInitializedAsync()
 	{
 		await ReloadUsersAsync();
 	}
 
-	public async Task HandleAddUserAsync()
+	private async Task HandleAddUserAsync()
 	{
 		UserModel? addedUser = await ShowUserDialogAsync();
 		if ( addedUser is null )
@@ -57,16 +100,16 @@
 		await ReloadUsersAsync();
 	}
 
-	public async Task HandleEditUserAsync(int id)
+	private async Task HandleEditUserAsync( int id )
 	{
 		UserModel? userToEdit = Users.FirstOrDefault( u => u.Id == id );
-		if (userToEdit is null)
+		if ( userToEdit is null )
 		{
 			return;
 		}
 
 		UserModel? editedUser = await ShowUserDialogAsync( userToEdit );
-		if (editedUser is null)
+		if ( editedUser is null )
 		{
 			return;
 		}
@@ -76,7 +119,57 @@
 		await ReloadUsersAsync();
 	}
 
-	public async Task<UserModel?> ShowUserDialogAsync(UserModel? userToEdit = null)
+	private async Task LoadTodoItemsAsync()
+	{
+		TodoItems = SelectedUserId == 0 ? [] : await TodoClient.GetTodoItems( SelectedUserId );
+	}
+
+	private async Task HandleAddTodoItemAsync()
+	{
+		TodoItemModel? addedItem = await ShowTodoItemDialogAsync();
+		if ( addedItem is null )
+		{
+			return;
+		}
+
+		addedItem.UserId = SelectedUserId;
+		await TodoClient.StoreTodoItem( addedItem );
+
+		await LoadTodoItemsAsync();
+	}
+
+	private async Task HandleEditTodoItemAsync( int id )
+	{
+		TodoItemModel? itemToEdit = TodoItems.FirstOrDefault( u => u.Id == id );
+		if ( itemToEdit is null )
+		{
+			return;
+		}
+
+		TodoItemModel? editedItem = await ShowTodoItemDialogAsync( itemToEdit );
+		if ( editedItem is null )
+		{
+			return;
+		}
+
+		await TodoClient.StoreTodoItem( editedItem );
+
+		await LoadTodoItemsAsync();
+	}
+
+	private async Task HandleToggleImportantAsync( int id )
+	{
+		await TodoClient.ToggleImportant( id );
+		await LoadTodoItemsAsync();
+	}
+
+	private async Task HandleToggleCompletedAsync( int id )
+	{
+		await TodoClient.ToggleCompleted( id );
+		await LoadTodoItemsAsync();
+	}
+
+	private async Task<UserModel?> ShowUserDialogAsync( UserModel? userToEdit = null )
 	{
 		userToEdit ??= new UserModel();
 
@@ -89,19 +182,44 @@
 			{ nameof(EditUserDialog.CurrentUser), userToEdit }
 		};
 		DialogOptions options = new()
-		{
-			Resizable = false,
-			Draggable = true,
-		};
+			{
+				Resizable = false,
+				Draggable = true,
+			};
 
-		dynamic dynamicResult = await DialogService.OpenAsync<EditUserDialog>(header, data, options);
+		dynamic dynamicResult = await DialogService.OpenAsync<EditUserDialog>( header, data, options );
 
 		UserModel result = dynamicResult;
 
 		return result;
 	}
 
-	public async Task ReloadUsersAsync()
+	private async Task<TodoItemModel?> ShowTodoItemDialogAsync( TodoItemModel? todoItemToEdit = null )
+	{
+		todoItemToEdit ??= new TodoItemModel();
+
+		string header = todoItemToEdit.Id == 0
+			? "Add Todo Item"
+			: "Edit Todo Item";
+
+		Dictionary<string, object?> data = new()
+		{
+			{ nameof(EditTodoItemDialog.CurrentItem), todoItemToEdit }
+		};
+		DialogOptions options = new()
+			{
+				Resizable = false,
+				Draggable = true,
+			};
+
+		dynamic dynamicResult = await DialogService.OpenAsync<EditTodoItemDialog>( header, data, options );
+
+		TodoItemModel result = dynamicResult;
+
+		return result;
+	}
+
+	private async Task ReloadUsersAsync()
 	{
 		Users = await UserApiClient.GetUsersAsync();
 	}

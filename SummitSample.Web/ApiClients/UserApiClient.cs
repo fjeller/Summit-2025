@@ -20,7 +20,7 @@ public class UserApiClient
 	public async Task<UserModel?> GetUserAsync( int id )
 	{
 		UserModel? result = await _httpClient.GetFromJsonAsync<UserModel>( $"/api/user/{id}" );
-		return result ?? null;
+		return result;
 	}
 
 	public async Task StoreUserAsync(UserModel model )

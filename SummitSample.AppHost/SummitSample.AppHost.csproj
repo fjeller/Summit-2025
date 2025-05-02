@@ -12,7 +12,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SummitSample.ApiService\SummitSample.ApiService.csproj" />
     <ProjectReference Include="..\SummitSample.TodoService\SummitSample.TodoService.csproj" />
     <ProjectReference Include="..\SummitSample.UserService\SummitSample.UserService.csproj" />
     <ProjectReference Include="..\SummitSample.Web\SummitSample.Web.csproj" />

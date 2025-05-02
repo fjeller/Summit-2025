@@ -1,0 +1,29 @@
+﻿@using SummitSample.Web.Models
+
+@inject DialogService DialogService
+
+<RadzenStack Gap="1rem" Orientation="Orientation.Vertical" JustifyContent="JustifyContent.SpaceBetween" Style="height: 100%;">
+	<RadzenStack>
+		<RadzenRow>
+			<RadzenColumn Size="12">
+				<RadzenStack>
+					<RadzenFormField Text="Text">
+						<RadzenTextArea Name="textAreaText" @bind-Value="@CurrentItem.Text" class="width-percent-100 height-pixels-200"></RadzenTextArea>
+					</RadzenFormField>
+				</RadzenStack>
+			</RadzenColumn>
+		</RadzenRow>
+	</RadzenStack>
+	<RadzenStack Visible="true" Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End" Gap="0.5rem">
+
+		<RadzenButton Click="@((args) => DialogService.Close(null))" Variant="Variant.Outlined" ButtonStyle="ButtonStyle.Primary" Text="Cancel" />
+		<RadzenButton Click="@((args) => DialogService.Close(CurrentItem))" Variant="Variant.Flat" ButtonStyle="ButtonStyle.Primary" Text="Ok" />
+
+	</RadzenStack>
+</RadzenStack>
+
+@code {
+
+	[Parameter]
+	public TodoItemModel CurrentItem { get; set; } = null!;
+}
