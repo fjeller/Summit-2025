@@ -86,7 +86,12 @@ public class Program
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
+
+		// Add Service Defaults for Aspire (healthcheck, open telemetry, service discovery, resilience
         builder.AddServiceDefaults();
+
+		// add Redis distributed cache
+		builder.AddRedisDistributedCache("RedisCache");
 
 		ConfigureServices(builder.Services, builder.Configuration);
 
