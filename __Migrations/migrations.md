@@ -1,0 +1,1 @@
+add-migration InitialMigration -Context UserDbContext -OutputDir Migrations -Project SummitSample.UserService.Data.SqlServer -StartupProject SummitSample.UserService
