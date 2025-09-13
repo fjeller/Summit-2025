@@ -1,5 +1,6 @@
-
+﻿
 using FastEndpoints;
+using FastEndpoints.Swagger;
 using Microsoft.EntityFrameworkCore;
 using SummitSample.ServiceDefaults;
 using SummitSample.UserService.Contracts.Repositories;
@@ -45,10 +46,10 @@ public class Program
 		return app;
 	}
 
-	private static void ConfigureServices(IServiceCollection services, IConfiguration configuration )
+	private static void ConfigureServices( IServiceCollection services, IConfiguration configuration )
 	{
 		// Add FastEndpoints
-		services.AddFastEndpoints();
+		services.AddFastEndpoints().SwaggerDocument();
 
 		// Add services to the container.
 		services.AddAuthorization();
@@ -64,7 +65,7 @@ public class Program
 		services.AddOpenApi();
 	}
 
-	private static void ConfigurePipeline(WebApplication app )
+	private static void ConfigurePipeline( WebApplication app )
 	{
 		app.MapDefaultEndpoints();
 
@@ -80,25 +81,25 @@ public class Program
 
 		app.UseAuthorization();
 
-		app.UseFastEndpoints();
+		app.UseFastEndpoints().UseSwaggerGen();
 	}
 
-    public static void Main(string[] args)
-    {
-        var builder = WebApplication.CreateBuilder(args);
+	public static void Main( string[] args )
+	{
+		var builder = WebApplication.CreateBuilder( args );
 
 		// Add Service Defaults for Aspire (healthcheck, open telemetry, service discovery, resilience
-        builder.AddServiceDefaults();
+		builder.AddServiceDefaults();
 
 		// add Redis distributed cache
-		builder.AddRedisDistributedCache("RedisCache");
+		builder.AddRedisDistributedCache( "RedisCache" );
 
-		ConfigureServices(builder.Services, builder.Configuration);
+		ConfigureServices( builder.Services, builder.Configuration );
 
-        var app = builder.Build();
+		var app = builder.Build();
 
 		ConfigurePipeline( app );
 
-        app.Run();
-    }
+		app.Run();
+	}
 }

@@ -30,6 +30,6 @@ public class GetGuidEndpoint : EndpointWithoutRequest
 			await _cache.SetStringAsync( _CACHEKEY, result, ct );
 		}
 
-		await SendStringAsync( result, cancellation: ct );
+		await Send.StringAsync( result, cancellation: ct );
 	}
 }

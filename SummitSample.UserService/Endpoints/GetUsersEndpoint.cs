@@ -22,6 +22,6 @@ public class GetUsersEndpoint : EndpointWithoutRequest<List<UserModel>>
 	public override async Task HandleAsync( CancellationToken ct )
 	{
 		List<UserModel> result = await _userService.GetUsersAsync();
-		await SendResultAsync( TypedResults.Ok( result ) );
+		await Send.ResultAsync( TypedResults.Ok( result ) );
 	}
 }

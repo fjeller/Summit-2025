@@ -1,4 +1,5 @@
-using FastEndpoints;
+﻿using FastEndpoints;
+using FastEndpoints.Swagger;
 using Microsoft.EntityFrameworkCore;
 using SummitSample.ServiceDefaults;
 using SummitSample.TodoService.Contracts.Repositories;
@@ -18,7 +19,7 @@ public class Program
 		services.AddAuthorization();
 
 		// Add FastEndpoints for RePR
-		services.AddFastEndpoints();
+		services.AddFastEndpoints().SwaggerDocument(); 
 
 		string? connectionString = configuration.GetConnectionString( "DefaultConnection" );
 		if ( String.IsNullOrWhiteSpace( connectionString ) )
@@ -48,7 +49,7 @@ public class Program
 
 		app.UseAuthorization();
 
-		app.UseFastEndpoints();
+		app.UseFastEndpoints().UseSwaggerGen(); 
 	}
 
 

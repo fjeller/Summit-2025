@@ -22,6 +22,6 @@ public class ToggleImportantEndpoint : Endpoint<SingleIdRequestModel, EmptyRespo
 	public override async Task HandleAsync( SingleIdRequestModel req, CancellationToken ct )
 	{
 		await _todoService.ToggleImportantAsync( req.Id );
-		await SendAsync( new EmptyResponse(), cancellation: ct );
+		await Send.OkAsync( new EmptyResponse(), cancellation: ct );
 	}
 }

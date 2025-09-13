@@ -22,6 +22,6 @@ public class ToggleCompletedEndpoint : Endpoint<SingleIdRequestModel, EmptyRespo
 	public override async Task HandleAsync( SingleIdRequestModel req, CancellationToken ct )
 	{
 		await _todoService.ToggleCompletedAsync( req.Id );
-		await SendAsync( new EmptyResponse(), cancellation: ct );
+		await Send.OkAsync( new EmptyResponse(), cancellation: ct );
 	}
 }

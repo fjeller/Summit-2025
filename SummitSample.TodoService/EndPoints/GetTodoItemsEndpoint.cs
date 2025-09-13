@@ -23,6 +23,6 @@ public class GetTodoItemsEndpoint : EndpointWithoutRequest<List<TodoItemModel>>
 	{
 		int userId = Route<int>( "userId" );
 		List<TodoItemModel> result = await _todoService.GetTodoItemsAsync( userId );
-		await SendResultAsync( TypedResults.Ok( result ) );
+		await Send.ResultAsync( TypedResults.Ok( result ) );
 	}
 }

@@ -25,11 +25,11 @@ public class GetTodoItemEndpoint : EndpointWithoutRequest<TodoItemModel>
 		TodoItemModel? result = await _todoService.GetTodoItemAsync( id );
 		if ( result is not null )
 		{
-			await SendResultAsync( TypedResults.Ok( result ) );
+			await Send.ResultAsync( TypedResults.Ok( result ) );
 		}
 		else
 		{
-			await SendResultAsync( TypedResults.NotFound() );
+			await Send.ResultAsync( TypedResults.NotFound() );
 		}
 	}
 }

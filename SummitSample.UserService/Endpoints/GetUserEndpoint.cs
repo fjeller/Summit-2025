@@ -25,11 +25,11 @@ public class GetUserEndpoint : EndpointWithoutRequest<UserModel>
 		UserModel? result = await _userService.GetUserAsync( id );
 		if ( result is not null )
 		{
-			await SendResultAsync( TypedResults.Ok( result ) );
+			await Send.ResultAsync( TypedResults.Ok( result ) );
 		}
 		else
 		{
-			await SendResultAsync( TypedResults.NotFound() );
+			await Send.ResultAsync( TypedResults.NotFound() );
 		}
 	}
 }
