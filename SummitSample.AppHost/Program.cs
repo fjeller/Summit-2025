@@ -1,6 +1,6 @@
 ﻿using Projects;
 
-var builder = DistributedApplication.CreateBuilder( args );
+IDistributedApplicationBuilder builder = DistributedApplication.CreateBuilder( args );
 
 var cache = builder.AddRedis( "RedisCache" )
 	.WithLifetime( ContainerLifetime.Persistent )
