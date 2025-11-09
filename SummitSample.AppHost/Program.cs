@@ -4,22 +4,21 @@ IDistributedApplicationBuilder builder = DistributedApplication.CreateBuilder( a
 
 var cache = builder.AddRedis( "RedisCache" )
 	.WithLifetime( ContainerLifetime.Persistent )
-	.WithRedisInsight()
-	.WithIconName( "Add_Circle" );
+	.WithRedisInsight();
 
 var userService = builder.AddProject<SummitSample_UserService>( "userservice" )
 	.WithHttpHealthCheck( "/health" )
 	.WithReference( cache )
 	.WaitFor( cache )
-	.WithExternalHttpEndpoints()
-	.WithIconName("LaptopPerson", IconVariant.Regular);
+	.WithExternalHttpEndpoints();
+	//.WithIconName("LaptopPerson", IconVariant.Regular);
 
 var todoService = builder.AddProject<SummitSample_TodoService>( "todoservice" )
 	.WithHttpHealthCheck( "/health" )
 	.WithReference( cache )
 	.WaitFor( cache )
-	.WithExternalHttpEndpoints()
-	.WithIconName("ClipboardBulletList", IconVariant.Regular);
+	.WithExternalHttpEndpoints();
+//.WithIconName("ClipboardBulletList", IconVariant.Regular);
 
 builder.AddProject<SummitSample_Web>( "webfrontend" )
 	.WithHttpHealthCheck( "/health" )
